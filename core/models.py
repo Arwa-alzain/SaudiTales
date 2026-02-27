@@ -8,8 +8,8 @@ class Landmark(models.Model):
     Description = models.TextField()              # وصف المعلم
     Image_Url = models.URLField(max_length=500, blank=True)  # رابط الصورة 
 
-def __str__(self):
-    return self.Landmark_Name
+    def __str__(self):
+        return self.Landmark_Name
 
 # جدول المفضلة
 class Favorite(models.Model):
