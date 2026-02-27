@@ -22,3 +22,13 @@ class Favorite(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.landmark.Landmark_Name}"
+    
+# جدول القصص والتعليقات 
+class Story(models.Model): 
+    user = models.ForeignKey(User, on_delete=models.CASCADE) # الشخص اللي كتب القصة 
+    landmark = models.ForeignKey("Landmark", on_delete=models.CASCADE) # المعلم المرتبط بالقصة 
+    content = models.TextField() # نص القصة أو التعليق 
+    created_at = models.DateTimeField(auto_now_add=True) # تاريخ الإضافة 
+    
+    def __str__(self): 
+        return f"{self.user.username} - {self.landmark.Landmark_Name}"
