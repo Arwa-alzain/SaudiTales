@@ -1,0 +1,117 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %} Profile {% endblock title %}
+{% block content %}
+<div class="container fade-in">
+    <!-- user information section -->
+    <section class="user-sec">
+        <div class="row">
+            <!-- user image profile -->
+            <div class="col-12 col-md-2 d-flex align-items-center justify-content-center">
+                <img src="{% static 'frontend/Images/HeroImage.jpg' %}" alt="Profile Image" class="rounded-circle">
+            </div>
+            <!-- user information -->
+            <div class="col-12 col-md-4 text-center text-md-start">
+                <h5>Mohammad {{user.name}}</h5>
+                <h5>@moham_1234 {{user.username}}</h5>
+                <h5>mohammad.A@gmail.com {{user.email}}</h5>
+            </div>
+            <div class="col-12 col-md-4 text-start text-md-start edit">
+                <i class="bi bi-pencil-square"></i>
+            </div>
+            <div class="col-12 col-md-2 text-end text-md-end setting">
+                <i class="bi bi-gear-fill"></i>
+            </div>
+        </div>
+    </section>
+    <hr>
+    <section class="fav-sec">
+        <h4>Favorite Places</h4>
+        <div class="row">
+            <!-- loop to show all favorite list -->
+            <div class="col"> <!-- each card on col -->
+                <a href="/infoPlace/">
+                    <div class="card">
+                        <img src="{% static 'frontend/Images/Masmak.jpg' %}" alt="favorite place">
+                        <h6>place name {{place.name}}</h6>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="/infoPlace/">
+                    <div class="card">
+                        <img src="{% static 'frontend/Images/Masmak.jpg' %}" alt="favorite place">
+                        <h6>place name {{place.name}}</h6>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="/infoPlace/">
+                    <div class="card">
+                        <img src="{% static 'frontend/Images/Masmak.jpg' %}" alt="favorite place">
+                        <h6>place name {{place.name}}</h6>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="/infoPlace/">
+                    <div class="card">
+                        <img src="{% static 'frontend/Images/Masmak.jpg' %}" alt="favorite place">
+                        <h6>place name {{place.name}}</h6>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="/infoPlace/">
+                    <div class="card">
+                        <img src="{% static 'frontend/Images/Masmak.jpg' %}" alt="favorite place">
+                        <h6>place name {{place.name}}</h6>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="/infoPlace/">
+                    <div class="card">
+                        <img src="{% static 'frontend/Images/Masmak.jpg' %}" alt="favorite place">
+                        <h6>place name {{place.name}}</h6>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+    <section class="share-sec">
+        <h4>Your Shared Stories/Comments</h4>
+        <div class="row">
+            <!-- loop to show all cards that the user comment in -->
+            <div class="col"> <!-- each card on col -->
+                <a href="/infoPlace/">
+                    <div class="card">
+                        <img src="{% static 'frontend/Images/Masmak.jpg' %}" alt="favorite place">
+                        <h6>place name {{place.name}}</h6>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="/infoPlace/">
+                    <div class="card">
+                        <img src="{% static 'frontend/Images/Masmak.jpg' %}" alt="favorite place">
+                        <h6>place name {{place.name}}</h6>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="/infoPlace/">
+                    <div class="card">
+                        <img src="{% static 'frontend/Images/Masmak.jpg' %}" alt="favorite place">
+                        <h6>place name {{place.name}}</h6>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+    <div class="logout-sec">
+        <button class="btn btn-outline-danger logout-btn">Log Out <i class="bi bi-box-arrow-right"></i></button>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,71 @@
+{% extends "layouts/base_admin.html" %}
+{% load static %}
+{% block title %} Admin Dashboard {% endblock title %}
+{% block content %}
+
+<h2 class="page-title">Daily analysis</h2>
+
+<!-- Stats cards -->
+<div class="daily-card">
+    <div class="row g-4 mb-4">
+        <div class="col-sm-6 col-lg-3 d-flex">
+            <div class="card-daily shadow-sm h-100 w-100">
+                <div class="card-body">
+                    <h3 class="text-muted"><i class="bi bi-person"></i></h3>
+                    <h3 class="fw-semibold">100</h3>
+                    <p>Number of registered users</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3 d-flex">
+            <div class="card-daily shadow-sm h-100 w-100">
+                <div class="card-body">
+                    <h3 class="text-muted"><i class="bi bi-geo-alt-fill"></i></h3>
+                    <h3 class="fw-semibold">100</h3>
+                    <p>Number of landmarks</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3 d-flex">
+            <div class="card-daily shadow-sm h-100 w-100">
+                <div class="card-body">
+                    <h3 class="text-muted"><i class="bi bi-chat-left-text"></i></h3>
+                    <h3 class="fw-semibold">100</h3>
+                    <p>Comments & stories</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3 d-flex">
+            <div class="card-daily shadow-sm h-100 w-100">
+                <div class="card-body">
+                    <h3 class="text-muted"><i class="bi bi-image"></i></h3>
+                    <h3 class="fw-semibold">100</h3>
+                    <p>Number of image recognition operations</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3 d-flex">
+            <div class="card-daily shadow-sm h-100 w-100">
+                <div class="card-body">
+                    <h3 class="text-muted"><i class="bi bi-exclamation-circle-fill"></i></h3>
+                    <h3 class="fw-semibold">100</h3>
+                    <p>Failed operations</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- monthly charts -->
+<h2 class="page-title mt-5">Monthly analysis</h2>
+
+<div class="charts-grid">
+    <div class="chart-card"><canvas id="engagementChart"></canvas></div>
+    <div class="chart-card"><canvas id="viewsChart"></canvas></div>
+    <div class="chart-card"><canvas id="visitsChart"></canvas></div>
+    <div class="chart-card"><canvas id="searchChart"></canvas></div>
+    <div class="chart-card"><canvas id="featuredChart"></canvas></div>
+</div>
+
+
+{% endblock content %}

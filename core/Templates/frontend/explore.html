@@ -1,0 +1,50 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %} Explore Landmarks {% endblock title %}
+{% block content %}
+<section class="search-section fade-in" style="margin-top: 112px;">
+    <div class="container text-center d-flex flex-column align-items-center justify-content-center">
+        <h5 class="explore-title">Explore Landmarks easily using text search or by uploading an image of a landmark</h5>
+        <!-- manual search -->
+        <div class="row my-4">
+            <form action="/exploreResult/" method="get" class="search-form">
+                <div class="col-auto manual-search align-items-center gap-3 d-flex flex-warp">
+                    <!-- search text -->
+                    <input type="search" class="form-control" placeholder="Search for landmarks...">
+                    <!-- custom dropdown -->
+                    <div class="custom-select">
+                        <button class="filter-btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-funnel"></i>filter</button>
+                        <div class="options-list">
+                            <div class="option active" data-value="Najd">Najd region</div>
+                            <div class="option active" data-value="Hejaz">Hejaz region</div>
+                            <div class="option" data-value="North">North region</div>
+                            <div class="option" data-value="South">South region</div>
+                            <div class="option" data-value="East">East region</div>
+                        </div>
+                    </div>
+                    <!-- submit btn -->
+                    <button class="search-btn" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+    <!-- selected filter tags -->
+    <div class="selected-tags"></div>
+
+    <!-- AI image recognition search -->
+    <div class="row my-4">
+        <div class="col-auto">
+            <div class="image-search align-items-center gap-3">
+                <div class="dashed-line">
+                    <label class="upload-img">
+                        <input type="file" id="ImageInput" accept="image/*" hidden>
+                        <img id="previewImage" src="{% static 'frontend/Images/Uploadimg-search.png' %}" alt="upload image" width="100px"
+                            height="100px"><br>
+                        <span class="text" id="uploadText">Click to upload or capture an image</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

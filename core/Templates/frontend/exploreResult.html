@@ -1,0 +1,68 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %} Explore Result {% endblock title %}
+{% block content %}
+<!-- found result page -->
+<section class="explore-results fade-in">
+    <h4>Searching Result</h4>
+    <hr> <!-- line -->
+    <div class="results-list">
+        <div class="results-row d-flex flex-wrap">
+            <div class="result-card">
+                <div class="card">
+                    <img src="{% static 'frontend/Images/HeroImage.jpg' %}" alt="result place">
+                    <div class="card-body">
+                        <h5 class="card-title">palce name</h5>
+                        <a href="/infoPlace/">
+                            <button class="view-btn">View</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- not found result page -->
+ <section class="explore-results fade-in">
+    <p>Sorry there is no result</p>
+    <hr> <!-- line -->
+    <h4>Related Places</h4>
+    <div class="results-list">
+        <div class="results-row d-flex flex-wrap">
+            <div class="result-card">
+                <div class="card">
+                    <img src="{% static 'frontend/Images/HeroImage.jpg' %}" alt="result place" width="100px" height="100px">
+                    <div class="card-body">
+                        <h5 class="card-title">palce name</h5>
+                        <a href="/infoPlace/">
+                            <button class="view-btn">View</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="result-card">
+                <div class="card">
+                    <img src="{% static 'frontend/Images/HeroImage.jpg' %}" alt="result place" width="100px" height="100px">
+                    <div class="card-body">
+                        <h5 class="card-title">palce name</h5>
+                        <a href="/infoPlace/">
+                            <button class="view-btn">View</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="result-card">
+                <div class="card">
+                    <img src="{% static 'frontend/Images/HeroImage.jpg' %}" alt="result place" width="100px" height="100px">
+                    <div class="card-body">
+                        <h5 class="card-title">palce name</h5>
+                        <a href="/infoPlace/">
+                            <button class="view-btn">View</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

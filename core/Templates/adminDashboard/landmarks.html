@@ -1,0 +1,140 @@
+{% extends "layouts/base_admin.html" %}
+{% load static %}
+{% block title %} Landmarks {% endblock title %}
+{% block content %}
+
+<h2 class="page-title">landmarks</h2>
+<div class="landmarks">
+    <!-- add landmark button -->
+    <div class="d-flex align-items-end justify-content-end">
+        <button class="add-land-btn" data-bs-toggle="modal" data-bs-target="#AddForm">Add Landmark</button>
+    </div>
+    <div class="table-box">
+        <table class="mt-3">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Destination</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="landmark-table"> <!-- loop to add all the landmark on the table-->
+                <tr>
+                    <!-- <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><button class="btn btn-danger deleteBtn" data-bs-toggle="modal" data-bs-target="#deletModal"><i class="bi bi-trash-fill"></i></button>
+                        <button class="btn btn-warning editBtn" data-bs-toggle="modal" data-bs-target="#EditForm"><i
+                                class="bi bi-pencil-square"></i></button> -->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- Add Landmarks form -->
+    <div class="modal fade" id="AddForm">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <!-- form header -->
+                <div class="modal-header">
+                    <h2>Add Landmark</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- form body -->
+                <div class="modal-body">
+                    <form action="#" id="myAddForm">
+                        <div class="inputField">
+                            <div>
+                                <label for="distanation">Distanation: </label>
+                                <input type="text" id="distanation" class="form-control">
+                            </div>
+                            <div>
+                                <label for="name">Name: </label>
+                                <input type="text" id="name" class="form-control">
+                            </div>
+                            <div>
+                                <label for="description">Description: </label>
+                                <textarea id="description" class="form-control"></textarea>
+                            </div>
+                            <div>
+                                <label for="imgInput" class="upload">Image: </label>
+                                <input type="file" id="imgInput" class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- form footer -->
+                <div class="modal-footer">
+                    <button class="btn btn-success" form="myAddForm" type="submit">Add</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- edit landmarks form -->
+    <div class="modal fade" id="EditForm">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <!-- form header -->
+                <div class="modal-header">
+                    <h2>Edit Landmark</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- form body -->
+                <div class="modal-body">
+                    <form action="#" id="myEditForm">
+                        <div class="inputField">
+                            <div>
+                                <label for="distanation">Distanation: </label>
+                                <input type="text" id="edit_distanation" class="form-control">
+                            </div>
+                            <div>
+                                <label for="name">Name: </label>
+                                <input type="text" id="edit_name" class="form-control">
+                            </div>
+                            <div>
+                                <label for="description">Description: </label>
+                                <textarea id="edit_description" class="form-control"></textarea>
+                            </div>
+                            <div>
+                                <label for="imgInput" class="upload">Image: </label>
+                                <input type="file" id="edit_imgInput" class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- form footer -->
+                <div class="modal-footer">
+                    <button class="btn btn-success" form="myEditForm" type="submit">Edit</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- pop alert for delete landmark -->
+    <div class="modal fade" id="deletModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Confirm delete landmark</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Are you sure you want to delete the landmark {{landmark.name}}?
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">cancel</button>
+                    <button id="confirmDelete" class="btn btn-danger"><a>delete</a></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

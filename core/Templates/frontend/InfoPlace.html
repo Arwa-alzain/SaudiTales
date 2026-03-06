@@ -1,0 +1,93 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %} Place Information {% endblock title %}
+{% block content %}
+<section class="info-place fade-in">
+    <div class="container text-center justify-content-center">
+        <!-- place image -->
+        <div class="row place-info">
+            <div class="col-12 col-md-6"> <!--place image-->
+                <img src="{% static 'frontend/Images/Masmak.jpg' %}" alt="Place Image">
+            </div>
+            <div class="col-12 col-md-6"> <!--place information-->
+                <div class="place-header d-flex">
+                    <h5 class="place-name">Masmak Fortress{{place.name}}</h5>
+                    <button class="like-btn">
+                        <i class="bi bi-heart"></i>
+                    </button>
+                    <button class="share-btn">
+                        <i class="bi bi-upload"></i>
+                    </button>
+                </div>
+                <!-- place description -->
+                <div class="place-description">
+                    <p>
+                        {{place.description}}
+                        The Masmak Fortress, located in the heart of Riyadh, Saudi Arabia, is a historic mud-brick fort
+                        that
+                        played a significant role in the country's history. Built in the late 19th century, it served as
+                        a
+                        military stronghold and a symbol of Saudi heritage. The fortress is known for its distinctive
+                        architecture, featuring thick walls, towers, and a central courtyard. Today, it stands as a
+                        popular
+                        tourist attraction and a museum, offering visitors a glimpse into Saudi Arabia's rich cultural
+                        past
+                        and its journey towards modernization.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- users comments -->
+        <div class="row users-comments py-5 mt-4">
+            <!-- if user is registered -->
+            <div class="col">
+                <h5 class="title">Users Comments</h5>
+                <div class="comment-box p-3 mb-3">
+                    <p class="comment-text">⭐ This place is amazing! I loved exploring the history and architecture of
+                        the
+                        Masmak Fortress. A must-visit for anyone interested in Saudi heritage.</p>
+                    <p class="comment-text">⭐ This place is amazing! I loved exploring the history and architecture of
+                        the
+                        Masmak Fortress. A must-visit for anyone interested in Saudi heritage.</p>
+                    <p class="comment-text">⭐ This place is amazing! I loved exploring the history and architecture of
+                        the
+                        Masmak Fortress. A must-visit for anyone interested in Saudi heritage.</p>
+                    <p class="comment-text">⭐ This place is amazing! I loved exploring the history and architecture of
+                        the
+                        Masmak Fortress. A must-visit for anyone interested in Saudi heritage.</p>
+                    <!-- add comments text -->
+                    <div class="text-comment d-flex align-items-center justify-content-center">
+                        <input type="text" class="form-control mt-0" placeholder="What do you think?"><button
+                            class="submit"><i class="bi bi-arrow-up-circle"></i></button>
+                    </div>
+                </div>
+            </div>
+            <!-- elif user is visitor  -->
+            <div class="col locked-comments">
+                <h5 class="title">Users Comments</h5>
+                <div class="comment-box blurred p-3 mb-3">
+                    <p class="comment-text">⭐ This place is amazing! I loved exploring the history and architecture of
+                        the
+                        Masmak Fortress. A must-visit for anyone interested in Saudi heritage.</p>
+                    <p class="comment-text">⭐ This place is amazing! I loved exploring the history and architecture of
+                        the
+                        Masmak Fortress. A must-visit for anyone interested in Saudi heritage.</p>
+                    <p class="comment-text">⭐ This place is amazing! I loved exploring the history and architecture of
+                        the
+                        Masmak Fortress. A must-visit for anyone interested in Saudi heritage.</p>
+                    <p class="comment-text">⭐ This place is amazing! I loved exploring the history and architecture of
+                        the
+                    <!-- add comments text -->
+                    <div class="text-comment d-flex align-items-center justify-content-center">
+                        <input type="text" class="form-control mt-0" placeholder="What do you think?"><button
+                            class="submit"><i class="bi bi-arrow-up-circle"></i></button>
+                    </div>
+                </div>
+                <div class="locked-overly">
+                    <p>Sign Up to see all users comments and stories!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
