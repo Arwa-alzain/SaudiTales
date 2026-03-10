@@ -4,7 +4,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('explore/', views.explore, name='explore'),
     path('exploreResult/', views.exploreResult, name='exploreResult'),
-    path('infoPlace/', views.infoPlace, name='infoPlace'),
+    # path('infoPlace/', views.infoPlace, name='infoPlace'),
     path('profile/', views.profile, name='profile'),
 
     #registeration:
@@ -15,4 +15,10 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('landmarks/', views.landmarks, name='landmarks'),
     path('accountMang/', views.accountMange, name='AccountManagement'),
+
+    # for AI Landmark Recognition Model
+    path('predict/', views.predict_landmark, name='predict_landmark'),
+
+    path('infoPlace/<int:landmark_id>/', views.infoPlace, name='infoPlace'),
+
 ]

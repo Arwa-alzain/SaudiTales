@@ -32,18 +32,22 @@
     <div class="selected-tags"></div>
 
     <!-- AI image recognition search -->
-    <div class="row my-4">
-        <div class="col-auto">
-            <div class="image-search align-items-center gap-3">
-                <div class="dashed-line">
-                    <label class="upload-img">
-                        <input type="file" id="ImageInput" accept="image/*" hidden>
-                        <img id="previewImage" src="{% static 'frontend/Images/Uploadimg-search.png' %}" alt="upload image" width="100px"
-                            height="100px"><br>
-                        <span class="text" id="uploadText">Click to upload or capture an image</span>
+    <form method="POST" action="{% url 'predict_landmark' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row my-4">
+            <div class="col-auto">
+                <div class="image-search align-items-center gap-3">
+                    <div class="dashed-line">
+                        <label class="upload-img">
+                            <input type="file" id="ImageInput" name="image" accept="image/*" hidden>
+                            <img id="previewImage" src="{% static 'frontend/Images/Uploadimg-search.png' %}" alt="upload image" width="100px" height="100px"><br>
+                            <span class="text" id="uploadText">Click to upload or capture an image</span>
                     </label>
                 </div>
             </div>
+            <br>
+            <!--- Search button -->
+            <button type="submit" class="search-btn">Search</button>
         </div>
     </div>
 </section>

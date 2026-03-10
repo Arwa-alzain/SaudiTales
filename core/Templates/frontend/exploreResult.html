@@ -6,14 +6,15 @@
 <section class="explore-results fade-in">
     <h4>Searching Result</h4>
     <hr> <!-- line -->
+    {% if landmark %}
     <div class="results-list">
         <div class="results-row d-flex flex-wrap">
             <div class="result-card">
                 <div class="card">
-                    <img src="{% static 'frontend/Images/HeroImage.jpg' %}" alt="result place">
+                    <img src="{{ landmark.Image_Url }}" alt="{{ landmark.Landmark_Name }}" width="100px" height="100px">
                     <div class="card-body">
-                        <h5 class="card-title">palce name</h5>
-                        <a href="/infoPlace/">
+                        <h5 class="card-title">{{ landmark.Landmark_Name }}</h5>
+                        <a href="{% url 'infoPlace' landmark.id %}">
                             <button class="view-btn">View</button>
                         </a>
                     </div>
@@ -21,48 +22,28 @@
             </div>
         </div>
     </div>
-</section>
-<!-- not found result page -->
- <section class="explore-results fade-in">
+    {% else %}
+    <!-- not found result page -->
     <p>Sorry there is no result</p>
     <hr> <!-- line -->
     <h4>Related Places</h4>
     <div class="results-list">
         <div class="results-row d-flex flex-wrap">
+            {% for l in top_landmarks %}
             <div class="result-card">
                 <div class="card">
-                    <img src="{% static 'frontend/Images/HeroImage.jpg' %}" alt="result place" width="100px" height="100px">
+                    <img src="{{ l.Image_Url }}" alt="{{ l.Landmark_Name }}" width="100px" height="100px">
                     <div class="card-body">
-                        <h5 class="card-title">palce name</h5>
-                        <a href="/infoPlace/">
+                        <h5 class="card-title">{{ l.Landmark_Name }}</h5>
+                        <a href="{% url 'infoPlace' l.id %}">
                             <button class="view-btn">View</button>
                         </a>
                     </div>
                 </div>
             </div>
-            <div class="result-card">
-                <div class="card">
-                    <img src="{% static 'frontend/Images/HeroImage.jpg' %}" alt="result place" width="100px" height="100px">
-                    <div class="card-body">
-                        <h5 class="card-title">palce name</h5>
-                        <a href="/infoPlace/">
-                            <button class="view-btn">View</button>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="result-card">
-                <div class="card">
-                    <img src="{% static 'frontend/Images/HeroImage.jpg' %}" alt="result place" width="100px" height="100px">
-                    <div class="card-body">
-                        <h5 class="card-title">palce name</h5>
-                        <a href="/infoPlace/">
-                            <button class="view-btn">View</button>
-                        </a>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
+    {% endif %}
 </section>
 {% endblock content %}
