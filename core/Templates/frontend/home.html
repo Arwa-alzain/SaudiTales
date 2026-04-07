@@ -54,67 +54,42 @@
 <section class="popular-land reveal">
     <h3 class="section-title text-center ">Popular Landmarks</h3>
     <div class="row row-cols-auto land-container">
+        {% for place in popular_landmarks %}
         <div class="col">
-            <a href="/infoPlace/">
-                <div class="place-card" style="background-image: url('static/frontend/Images/Masmak.jpg');">
+            <a href="{% url 'infoPlace' place.id %}">
+                <div class="place-card" style="background-image: url('{{ place.Image_Url }}');">
                     <div class="card-overly">
-                        <h6>Al Masmak Palace</h6>
-                        <p>
-                            A historic landmark in the heart of Riyadh, closely associated with the
-                            unification of Saudi Arabia and an important chapter in its political history.
-                        </p>
+                        <h6>{{ place.Landmark_Name }}</h6>
+                        <p>{{ place.Description|truncatewords:25 }}</p>
                     </div>
                 </div>
             </a>
         </div>
-        <div class="col">
-            <a href="/infoPlace/">
-                <div class="place-card" style="background-image: url('static/frontend/Images/SiplitRock.jpg');">
-                    <div class="card-overly">
-                        <h6>Split Rock</h6>
-                        <p>
-                            A striking natural rock formation, famous for its split shape and considered
-                            one of Saudi Arabia’s distinctive geological landmarks.
-                        </p>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col">
-            <a href="/infoPlace/">
-                <div class="place-card" style="background-image: url('static/frontend/Images/RejalAlmaa.jpg');">
-                    <div class="card-overly">
-                        <h6>Rejal Almaa</h6>
-                        <p>
-                            A traditional heritage village in southern Saudi Arabia, known for
-                            its unique stone architecture, colorful decorations, and rich history.
-                        </p>
-                    </div>
-                </div>
-            </a>
-        </div>
+        {% endfor %}
     </div>
 </section>
-<!-- Saudi Map Section -->
-<section class="saudi-map py-5 section-space reveal">
-    <div class="row row-cols-auto saudi-map">
-        <div class="col map">
-            <img src="static/frontend/Images/SaudiMap.png" alt="Saudi Arabia Map">
+<section id="about">
+    <!-- Saudi Map Section -->
+    <section class="saudi-map py-5 section-space reveal">
+        <div class="row row-cols-auto saudi-map">
+            <div class="col map">
+                <img src="static/frontend/Images/SaudiMap.png" alt="Saudi Arabia Map">
+            </div>
+            <div class="col map-text">
+                <h5 class="mb-4">Saudi Identity… A History Told Through Place</h5>
+                <p class="mb-3">
+                    The Kingdom of Saudi Arabia possesses a rich cultural and historical heritage that spans
+                    centuries,
+                    reflected in its historical landmarks and diverse traditions across different regions. Through
+                    our
+                    platform, we aim to document this heritage, introduce it to visitors, and support cultural
+                    tourism
+                    through a digital experience that highlights the Kingdom’s identity and preserves its stories
+                    for
+                    future generations.
+                </p>
+            </div>
         </div>
-        <div class="col map-text">
-            <h5 class="mb-4">Saudi Identity… A History Told Through Place</h5>
-            <p class="mb-3">
-                The Kingdom of Saudi Arabia possesses a rich cultural and historical heritage that spans
-                centuries,
-                reflected in its historical landmarks and diverse traditions across different regions. Through
-                our
-                platform, we aim to document this heritage, introduce it to visitors, and support cultural
-                tourism
-                through a digital experience that highlights the Kingdom’s identity and preserves its stories
-                for
-                future generations.
-            </p>
-        </div>
-    </div>
+    </section>
 </section>
 {% endblock content %}

@@ -39,13 +39,13 @@
                 <a class="nav-link" href="/explore/"><i class="bi bi-search"></i> Explore</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#about"><i class="bi bi-exclamation-circle-fill"></i> About</a>
+                <a class="nav-link" href="{% url 'home' %}#about"><i class="bi bi-exclamation-circle-fill"></i> About</a>
             </li>
         </ul>
         {% if user.is_authenticated %}
         <div class="user-info">
             <hr>
-            <a class="profile-link" href="/profile/"><i class="bi bi-person-fill"></i> Welcome {{user.username}}</a>
+            <a class="profile-link" href="/profile/"><i class="bi bi-person-fill"></i> Welcome {{user.first_name}}</a>
             
             <form action="{% url 'logout' %}" method="post">
                 {% csrf_token %}

@@ -21,7 +21,8 @@
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody id="landmark-table"> <!-- loop to add all the landmark on the table-->
+            <tbody> <!-- loop to add all the landmark on the table-->
+                {% for landmark in landmarks %}
                 <tr>
                     <!-- <td></td>
                     <td></td>
@@ -31,11 +32,64 @@
                     <td><button class="btn btn-danger deleteBtn" data-bs-toggle="modal" data-bs-target="#deletModal"><i class="bi bi-trash-fill"></i></button>
                         <button class="btn btn-warning editBtn" data-bs-toggle="modal" data-bs-target="#EditForm"><i
                                 class="bi bi-pencil-square"></i></button> -->
+                    <td>{{ landmark.id }}</td>
+                    <td>{{ landmark.Destination }}</td>
+                    <td>{{ landmark.Landmark_Name }}</td>
+                    <td>{{ landmark.Description|truncatechars:50 }}</td>
+                    <td>
+                        {% if landmark.Image_Url %}
+                            <img src="{{ landmark.Image_Url }}" width="50" alt="{{ landmark.Landmark_Name }}">
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        <button class="btn btn-warning editBtn" data-bs-toggle="modal" data-bs-target="#EditForm" data-id="{{ landmark.id }}">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <button class="btn btn-danger deleteBtn" data-bs-toggle="modal" data-bs-target="#deletModal" data-id="{{ landmark.id }}">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
                     </td>
                 </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">No landmarks found.</td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
+</div>
+
+<!--        <tbody id="landmark-table">
+                {% for landmark in landmarks %}
+                <tr>
+                    <td>{{ landmark.id }}</td>
+                    <td>{{ landmark.destination }}</td>
+                    <td>{{ landmark.name }}</td>
+                    <td>{{ landmark.description|truncatechars:50 }}</td>
+                    <td>
+                        {% if landmark.image %}
+                            <img src="{{ landmark.image.url }}" width="50" alt="{{ landmark.name }}">
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        <button class="btn btn-warning editBtn" data-bs-toggle="modal" data-bs-target="#EditForm" data-id="{{ landmark.id }}"><i class="bi bi-pencil-square"></i></button>
+                        <button class="btn btn-danger deleteBtn" data-bs-toggle="modal" data-bs-target="#deletModal" data-id="{{ landmark.id }}"><i class="bi bi-trash-fill"></i></button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">No landmarks found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div> -->
+    
     <!-- Add Landmarks form -->
     <div class="modal fade" id="AddForm">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -125,7 +179,7 @@
                 </div>
                 <div class="modal-body">
                     <p>
-                        Are you sure you want to delete the landmark {{landmark.name}}?
+                        Are you sure you want to delete this landmark?
                     </p>
                 </div>
                 <div class="modal-footer">

@@ -19,18 +19,42 @@
                 </tr>
             </thead>
             <tbody id="user-table"> <!-- loop to add all the users on the table-->
+                {% for user in users %}
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><button class="btn btn-danger deleteBtn"><i class="bi bi-trash-fill"></i></button>
-                        <button class="btn btn-warning disableBtn">Disable</button>
-                        <button class="btn btn-success">Change</button>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.first_name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        {% if user.is_superuser %}
+                            Admin
+                        {% else %}
+                            Regular
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if user.is_active %}
+                            Active
+                        {% else %}
+                            Disabled
+                        {% endif %}
+                    </td>
+                    <td><button class="btn btn-danger deleteBtn" data-id="{{ user.id }}">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                        {% if user.is_active %}
+                            <button class="btn btn-warning disableBtn" data-id="{{ user.id }}">Disable</button>
+                        {% else %}
+                            <button class="btn btn-success enableBtn" data-id="{{ user.id }}">Enable</button>
+                        {% endif %}
+                        <button class="btn btn-primary changeBtn" data-id="{{ user.id }}">Change</button>
                     </td>
                 </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">No users found.</td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

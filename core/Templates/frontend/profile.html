@@ -12,12 +12,14 @@
             </div>
             <!-- user information -->
             <div class="col-12 col-md-4 text-center text-md-start">
-                <h5>{{user.first_name}}</h5> 
+                <h5>{{user.first_name|default:user.username}}</h5>
                 <h5>@{{user.username}}</h5>
                 <h5>{{user.email}}</h5>
             </div>
             <div class="col-12 col-md-4 text-start text-md-start edit">
-                <i class="bi bi-pencil-square"></i>
+                <!--<i class="bi bi-pencil-square"></i>-->
+                <i class="bi bi-pencil-square" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editNameModal"></i>
+                <!-- the above updated code is to enable username editing-->
             </div>
             <div class="col-12 col-md-2 text-end text-md-end setting">
                 <i class="bi bi-gear-fill"></i>
@@ -29,9 +31,9 @@
         <h4>Favorite Places</h4>
         <div class="row">
             {% for landmark in favorites %}
-            <div class="col-12 col-md-4 col-lg-3 mb-3">
+            <div class="col">
                 <a href="{% url 'infoPlace' landmark.id %}">
-                    <div class="card h-100">
+                    <div class="card">
                         <img src="{{ landmark.Image_Url }}" 
                             alt="{{ landmark.Landmark_Name }}" 
                             class="card-img-top">
@@ -73,5 +75,34 @@
         </form>
     </div>
 </div>
+
+<!--this is for updating the display name in profile page-->
+<div class="modal fade" id="editNameModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5>Edit Name</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="first_name"
+                           value="{{ user.first_name }}"
+                           class="form-control"
+                           placeholder="Enter your name">
+                    
+                    <div class="mt-3 text-end">
+                        <button type="submit" class="btn btn-success">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 {% endblock content %}

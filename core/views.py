@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib import messages
 from .models import Landmark, Favorite, Story
-from django.db.models import Q
+from django.db.models import Q, Count, F
 import os
 import joblib
 import numpy as np
@@ -19,8 +19,17 @@ from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 
 # Create your views here.
 def home(request):
+
+    # to count number of likes and comments of landmarks
+    popular_landmarks = Landmark.objects.annotate(
+        likes_count=Count('favorite_set', distinct=True),
+        comments_count=Count('story_set', distinct=True),
+        popularity_score=F('likes_count') + 0.5 * F('comments_count')
+    ).order_by('-popularity_score')[:3]
+
     return render(request, 'frontend/home.html', {
-        'is_login': request.user.is_authenticated
+        'is_login': request.user.is_authenticated,
+        'popular_landmarks': popular_landmarks,
     })
 def explore(request):
     return render(request, 'frontend/explore.html',{
@@ -92,10 +101,25 @@ def profile(request):
     # Get all landmarks this user has favorited + the comments they shared
     favorites = Favorite.objects.filter(user=user).select_related('landmark')
     user_stories = Story.objects.filter(user=user).order_by('-created_at')
+    
+    # to have only one card even if user have multiple comments in the same landmark
+    unique_stories = {}
+    for story in user_stories:
+        if story.landmark.id not in unique_stories:
+            unique_stories[story.landmark.id] = story
+    user_stories_unique = list(unique_stories.values())
 
+    # this is for editing the user display name/first name
+    if request.method == "POST":
+        first_name = request.POST.get("first_name")
+        if first_name:
+            user.first_name = first_name
+            user.save()
+        return redirect('profile')
+    
     context = {
         'favorites': [f.landmark for f in favorites],  # only the Landmark objects
-        'user_stories': user_stories,
+        'user_stories': user_stories_unique,
     }
     return render(request, 'frontend/profile.html', context)
 
@@ -176,12 +200,27 @@ def toggle_favorite(request, landmark_id):
     return redirect('infoPlace', landmark_id=landmark.id)
 
 #admin dashboard:
+@login_required
 def dashboard(request):
-    return render(request, 'adminDashboard/dashboard.html')
+    context = {
+        'users_count': User.objects.count(),
+        'landmarks_count': Landmark.objects.count(),
+        'comments_count': Story.objects.count(),
+    }
+    return render(request, 'adminDashboard/dashboard.html', context)
+@login_required
 def landmarks(request):
-    return render(request, 'adminDashboard/landmarks.html')
+    landmarks = Landmark.objects.all()
+    return render(request, 'adminDashboard/landmarks.html', {'landmarks': landmarks})
+@login_required
+def delete_landmark(request, landmark_id):
+    landmark = get_object_or_404(Landmark, id=landmark_id)
+    landmark.delete()
+    return redirect('landmarks')
+@login_required
 def accountMange(request):
-    return render(request, 'adminDashboard/AccountMang.html')
+    users = User.objects.all()
+    return render(request, 'adminDashboard/AccountMang.html', {'users': users})
 
 # for download the MobileNet module once when running the server
 base_model = tf.keras.applications.MobileNetV2(weights='imagenet', include_top=False, pooling='avg')
