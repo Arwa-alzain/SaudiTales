@@ -6,8 +6,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib import messages
-from .models import Landmark, Favorite, Story
+from .models import Landmark, Favorite, Story, ImageRecognitionLog, ActivityLog 
 from django.db.models import Q, Count, F
+from django.db.models.functions import TruncDate, TruncMonth
+from dateutil.relativedelta import relativedelta
+from django.utils import timezone
+from datetime import timedelta
 import os
 import joblib
 import numpy as np
@@ -44,6 +48,10 @@ def exploreResult(request):
     results = []
     #to get information from db
     if query and len(query) >= 3: # limit length to avoide large scale saerching
+        ActivityLog.objects.create(
+            user=request.user if request.user.is_authenticated else None,
+            action_type='search'
+        )
         results = Landmark.objects.filter(
             #we used icontains to "NOT" make the search case sensitive
             Q(Landmark_Name__icontains=query) | Q(Description__icontains=query)
@@ -68,6 +76,13 @@ def infoPlace(request, landmark_id):
     # to fetch the landmark details using the provided landmark_id
     place = get_object_or_404(Landmark, id=landmark_id)
     
+    # count views of this landmark
+    ActivityLog.objects.create(
+        user=request.user if request.user.is_authenticated else None,
+        action_type='view_landmark',
+        landmark=place
+    )
+    
     #to check if this landmark is favorited by the user
     is_favorite = False
     if request.user.is_authenticated:
@@ -82,6 +97,10 @@ def infoPlace(request, landmark_id):
         if comment_content:
             from .models import Story  # make sure Story model exists
             Story.objects.create(user=request.user, landmark=place, content=comment_content)
+            ActivityLog.objects.create(
+                user=request.user,
+                action_type='comment'
+            )
         return redirect('infoPlace', landmark_id=landmark_id)  # refresh page to show new comment
     
     #to get all comments for this landmark to be displayed
@@ -205,7 +224,6 @@ def logout_view(request):
     return redirect("/")
 
 @login_required
-@login_required
 def toggle_favorite(request, landmark_id):
     landmark = get_object_or_404(Landmark, id=landmark_id)
     favorite_obj = Favorite.objects.filter(user=request.user, landmark=landmark).first()
@@ -217,6 +235,11 @@ def toggle_favorite(request, landmark_id):
         # Not favorited -> add it
         Favorite.objects.create(user=request.user, landmark=landmark)
 
+    ActivityLog.objects.create(
+        user=request.user,
+        action_type='like'
+    )
+    
     return redirect('infoPlace', landmark_id=landmark.id)
 
 #admin dashboard:
@@ -225,15 +248,90 @@ def dashboard(request):
     users_count = User.objects.count()
     landmarks_count = Landmark.objects.count()
     comments_count = Story.objects.count()
-    image_ops_count = 0  # temproraly
-    failed_ops_count = 0  # temproraly
-
-
+    image_ops_count = ImageRecognitionLog.objects.count()
+    failed_ops_count = ImageRecognitionLog.objects.filter(success=False).count()
+    three_months_ago = timezone.now() - timedelta(days=90)
+    last_30_days = timezone.now() - timedelta(days=30)
 
     #landmark % based on reigon
     landmarks_by_dest = Landmark.objects.values('Destination').annotate(count=Count('id')).order_by('-count')
     destinations = [item['Destination'] for item in landmarks_by_dest]
     dest_counts = [item['count'] for item in landmarks_by_dest]
+
+    # for img recognition success/fail last 3 months count
+    end_date = timezone.now()
+    start_date = end_date - relativedelta(months=2)  # includes current + 2 previous
+
+    image_monthly = (
+        ImageRecognitionLog.objects
+        .filter(created_at__gte=start_date)
+        .annotate(month=TruncMonth('created_at'))
+        .values('month')
+        .annotate(
+            success_count=Count('id', filter=Q(success=True)),
+            failed_count=Count('id', filter=Q(success=False))
+        )
+        .order_by('month')
+    )
+    #to show 3 month timeline
+    months = []
+    success_map = {}
+    failed_map = {}
+    current = start_date.replace(day=1)
+    for i in range(3):
+        month_key = current.strftime("%b %Y")
+        months.append(month_key)
+        success_map[month_key] = 0
+        failed_map[month_key] = 0
+        current += relativedelta(months=1)
+    
+    for item in image_monthly:
+        key = item['month'].strftime("%b %Y")
+        success_map[key] = item['success_count']
+        failed_map[key] = item['failed_count']
+
+    image_labels = months
+    success_counts = [success_map[m] for m in months]
+    failed_counts = [failed_map[m] for m in months]
+
+    # for avtivities(comment/like/search/img recog) log
+    activity_monthly = (
+        ActivityLog.objects
+        .annotate(day=TruncDate('created_at'))
+        .values('day')
+        .annotate(count=Count('id'))
+        .order_by('day')
+    )
+
+    activity_labels = [a['day'].strftime("%m-%d") for a in activity_monthly]
+    activity_counts = [a['count'] for a in activity_monthly]
+
+
+    #for users growth count
+    user_growth = (
+        User.objects
+        .filter(date_joined__gte=last_30_days)
+        .annotate(day=TruncDate('date_joined'))
+        .values('day')
+        .annotate(count=Count('id'))
+        .order_by('day')
+    )
+
+    user_labels = [u['day'].strftime("%d %b") for u in user_growth]
+    user_counts = [u['count'] for u in user_growth]
+
+
+    # to show top 5 viewd landmarks
+    top_viewed = (
+        ActivityLog.objects
+        .filter(action_type='view_landmark', landmark__isnull=False)
+        .values('landmark__Landmark_Name')
+        .annotate(count=Count('id'))
+        .order_by('-count')[:5]
+    )
+
+    top_viewed_labels = [i['landmark__Landmark_Name'] for i in top_viewed]
+    top_viewed_counts = [i['count'] for i in top_viewed]
 
     context = {
         'users_count': User.objects.count(),
@@ -243,6 +341,15 @@ def dashboard(request):
         'failed_ops_count': failed_ops_count,
         'destinations': destinations,
         'dest_counts': dest_counts,
+        'image_labels': image_labels,
+        'success_counts': success_counts,
+        'failed_counts': failed_counts,
+        'activity_labels': activity_labels,
+        'activity_counts': activity_counts,
+        'user_labels': user_labels,
+        'user_counts': user_counts,
+        'top_viewed_labels': top_viewed_labels,
+        'top_viewed_counts': top_viewed_counts,
     }
     return render(request, 'adminDashboard/dashboard.html', context)
 
@@ -359,6 +466,7 @@ def predict_landmark(request):
     landmark = None
     top_landmarks = []
     error_msg = None
+    success = False
 
     BASE_THRESHOLD = 0.60
     MARGIN_THRESHOLD = 0.02
@@ -397,12 +505,22 @@ def predict_landmark(request):
             # 4️ Decision Logic
             if best_score >= BASE_THRESHOLD and margin > MARGIN_THRESHOLD:
                 landmark = Landmark.objects.get(id=int(best_id))
+                success = True
             else:
                 top_3_ids = [int(i) for i, s in similarities[:3]]
                 top_landmarks = [Landmark.objects.get(id=lid) for lid in top_3_ids]
+                success = False
 
         except Exception as e:
             error_msg = f"An error occurred during processing: {str(e)}"
+            success = False
+    
+        ImageRecognitionLog.objects.create(success=success)
+
+        ActivityLog.objects.create(
+            user=request.user if request.user.is_authenticated else None,
+            action_type='image_recognition'
+        )
 
     return render(request, 'frontend/exploreResult.html', {
         'landmark': landmark,

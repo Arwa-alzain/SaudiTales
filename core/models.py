@@ -31,3 +31,20 @@ class Story(models.Model):
     
     def __str__(self): 
         return f"{self.user.username} - {self.landmark.Landmark_Name}"
+
+# for storing logs to display activities in Dashboard    
+class ImageRecognitionLog(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    success = models.BooleanField(default=True)
+class ActivityLog(models.Model):
+    ACTION_TYPES = [
+        ('search', 'Search'),
+        ('image_recognition', 'Image Recognition'),
+        ('like', 'Like'),
+        ('comment', 'Comment'),
+    ]
+
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    action_type = models.CharField(max_length=30, choices=ACTION_TYPES)
+    created_at = models.DateTimeField(auto_now_add=True)
+    landmark = models.ForeignKey(Landmark, null=True, blank=True, on_delete=models.SET_NULL)
