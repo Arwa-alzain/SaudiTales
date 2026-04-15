@@ -10,7 +10,7 @@
             <form action="{% url 'exploreResult' %}" method="get" class="search-form">
                 <div class="col-auto manual-search align-items-center gap-3 d-flex flex-warp">
                     <!-- search text -->
-                    <input type="search" class="form-control" placeholder="Search for landmarks...">
+                    <input type="search" name="q" class="form-control" placeholder="Search for landmarks..." required>
                     <!-- custom dropdown -->
                     <div class="custom-select">
                         <button class="filter-btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -43,15 +43,17 @@
     <div class="selected-tags"></div>
 
     <!-- AI image recognition search -->
-    <div class="row my-4">
-        <div class="col-auto">
-            <div class="image-search align-items-center gap-3">
-                <div class="dashed-line">
-                    <label class="upload-img">
-                        <input type="file" id="ImageInput" accept="image/*" hidden>
-                        <img id="previewImage" src="{% static 'frontend/Images/Uploadimg-search.png' %}" alt="upload image" width="100px"
-                            height="100px"><br>
-                        <span class="text" id="uploadText">Click to upload or capture an image</span>
+    <form method="POST" action="{% url 'predict_landmark' %}" enctype="multipart/form-data" id='imageSearchForm'>
+        {% csrf_token %}
+        <div class="row my-4 search-container">
+            <div class="col-auto">
+                <div class="image-search align-items-center gap-3">
+                    <div class="dashed-line">
+                        <label class="upload-img">
+                            <input type="file" id="ImageInput" name="image" accept="image/*" hidden>
+                            <img id="previewImage" src="{% static 'frontend/Images/Uploadimg-search.png' %}" alt="upload image" width="100px" height="100px"><br>
+                            <span class="text" id="uploadText">Click to upload or capture an image</span>
+                            <small id="errorText" style="color:red; display:none;"></small>
                     </label>
                 </div>
             </div>
