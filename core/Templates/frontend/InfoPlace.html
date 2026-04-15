@@ -29,7 +29,7 @@
                             <i class="bi bi-heart"></i>
                         </a>
                     {% endif %}
-                    <button class="share-btn">
+                    <button class="share-btn" id="shareBtn">
                         <i class="bi bi-upload"></i>
                     </button>
                 </div>
@@ -49,7 +49,9 @@
                             <!--to get the comments from DB-->
                             {% for story in stories %}
                             <p class="comment-text">
-                                ⭐ {{ story.user.first_name|default:story.user.username }}:
+                                <strong class="comment-user">
+                                    {{ story.user.first_name|default:story.user.username }}:
+                                 </strong>:
                                 {{ story.content }}
                             </p>
                         {% empty %}
@@ -93,11 +95,77 @@
                         </div>
                     </div>
                     <div class="locked-overly">
-                        <p>Sign Up to see all users comments and stories!</p>
+                        <p>
+                            <a href="{% url 'login' %}" class="login-link">
+                                Sign Up
+                            </a>
+                            to see all users comments and stories!
+                        </p>
                     </div>
                 </div>
                 {% endif %}
             </div>
     </div>
 </section>
+
+<!--activating share button-->
+<script>
+document.getElementById("shareBtn").addEventListener("click", async () => {
+    const shareData = {
+        title: document.title,
+        text: "Check out {{place.Landmark_Name}} on SaudiTales! Discover its history and details below:!",
+        url: window.location.href
+    };
+
+    // If browser supports native share such as in mobile phones
+    if (navigator.share) {
+        try {
+            await navigator.share(shareData);
+        } catch (err) {
+            console.log("Share cancelled");
+        }
+    } else { 
+        //if it is not mobile phone, then it is on desktop. so copy the link.
+        navigator.clipboard.writeText(window.location.href);
+        alert("Link copied to clipboard!");
+    }
+});
+</script>
+
+<!--left align the comments-->
+<style>
+.comment-box {
+    text-align: left;
+}
+</style>
+<!--when comments are hidden, enable link at'sign up' to redirect to sign up page-->
+<style>
+.login-link {
+    color: black;
+    text-decoration: underline;
+    font-weight: 800;
+    transition: color 0.2s ease;
+}
+
+.login-link:hover {
+    color: #007bff;
+}
+
+.login-link:active {
+    color: #0056b3;
+}
+</style>
+
+<!--this is to wrap comments so text will be kept inside the comment section box-->
+<style>
+.comment-box {
+    text-align: left;
+}
+
+.comment-text {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+</style>
 {% endblock content %}

@@ -67,6 +67,7 @@
     <div class="chart-card"><canvas id="featuredChart"></canvas></div>
 </div>
 
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const ctx = document.getElementById('featuredChart').getContext('2d');
@@ -103,6 +104,142 @@
             }
         }
     });
+
+});
+
+const imgCtx = document.getElementById('visitsChart').getContext('2d');
+
+new Chart(imgCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ image_labels|safe }},
+        datasets: [
+            {
+                label: 'Successful Recognition',
+                data: {{ success_counts|safe }},
+                backgroundColor: '#36A2EB'
+            },
+            {
+                label: 'Failed Recognition',
+                data: {{ failed_counts|safe }},
+                backgroundColor: '#FF6384'
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            },
+            title: {
+                display: true,
+                text: 'Image Recognition Monthly Count'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+const searchCtx = document.getElementById('searchChart').getContext('2d');
+
+new Chart(searchCtx, {
+    type: 'line',
+    data: {
+        labels: {{ activity_labels|safe }},
+        datasets: [{
+            label: 'Activity',
+            data: {{ activity_counts|safe }},
+            borderWidth: 2,
+            fill: false,
+            tension: 0.3
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            },
+            title: {
+                display: true,
+                text: 'User Activities Over Last 30 Days'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+const userCtx = document.getElementById('engagementChart').getContext('2d');
+
+new Chart(userCtx, {
+    type: 'line',
+    data: {
+        labels: {{ user_labels|safe }},
+        datasets: [{
+            label: 'New Users',
+            data: {{ user_counts|safe }},
+            borderWidth: 2,
+            fill: false,
+            tension: 0.3
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            },
+            title: {
+                display: true,
+                text: 'User Growth Over Time'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+const topViewedCtx = document.getElementById('viewsChart').getContext('2d');
+
+new Chart(topViewedCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ top_viewed_labels|safe }},
+        datasets: [{
+            label: 'Most Viewed Landmarks',
+            data: {{ top_viewed_counts|safe }},
+            backgroundColor: '#FF6384'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom' },
+            title: {
+                display: true,
+                text: 'Top 5 Most Viewed Landmarks'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
 </script>
 
 {% endblock content %}
