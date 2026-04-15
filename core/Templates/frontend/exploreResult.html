@@ -2,7 +2,7 @@
 {% load static %}
 {% block title %} Explore Result {% endblock title %}
 {% block content %}
-<!-- found result page -->
+<!-- found result -->
 <section class="explore-results fade-in">
     <h4>Searching Results for "{{ query }}"</h4>
     <hr> <!-- line -->
@@ -13,8 +13,8 @@
                 <div class="card">
                     <img src="{{ landmark.Image_Url }}" alt="{{ landmark.Landmark_Name }}" width="100px" height="100px">
                     <div class="card-body">
-                        <h5 class="card-title">{{ landmark.Landmark_Name }}</h5>
-                        <a href="{% url 'infoPlace' landmark.id %}">
+                        <h5 class="card-title">place name</h5>
+                        <a href="/infoPlace/">
                             <button class="view-btn">View</button>
                         </a>
                     </div>
@@ -22,39 +22,136 @@
             </div>
         </div>
     </div>
-    {% elif top_landmarks %}
-    <h4>Search Results</h4>
-    <div class="results-list">
-        <div class="results-row d-flex flex-wrap">
-            {% for l in top_landmarks %}
-            <div class="result-card">
-                <div class="card">
-                    <img src="{{ l.Image_Url }}" alt="{{ l.Landmark_Name }}" width="100px" height="100px">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ l.Landmark_Name }}</h5>
-                        <a href="{% url 'infoPlace' l.id %}">
-                            <button class="view-btn">View</button>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% else %}
-    <!-- not found result page -->
-    <p>Sorry there is no result</p>
+</section>
+<section class="explore-results fade-in">
     <hr> <!-- line -->
     <h4>Related Places</h4>
     <div class="results-list">
-        <div class="results-row d-flex flex-wrap">
-            {% for l in related_landmarks %}
-            <div class="result-card">
+        <div class="row row-cols-auto results-row d-flex flex-wrap">
+            <!-- loop for one col -->
+            <div class="col result-card">
                 <div class="card">
-                    <img src="{{ l.Image_Url }}" alt="{{ l.Landmark_Name }}" width="100px" height="100px">
+                    <img src="{% static 'frontend/Images/HeroImage.jpg' %}" alt="result place" width="100px"
+                        height="100px">
                     <div class="card-body">
-                        <h5 class="card-title">{{ l.Landmark_Name }}</h5>
-                        <a href="{% url 'infoPlace' l.id %}">
+                        <h5 class="card-title">phhhhhhlace namhhhhhhhhhe</h5>
+                        <a href="/infoPlace/">
+                            <button class="view-btn">View</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col result-card">
+                <div class="card">
+                    <img src="{% static 'frontend/Images/HeroImage.jpg' %}" alt="result place" width="100px"
+                        height="100px">
+                    <div class="card-body">
+                        <h5 class="card-title">place name</h5>
+                        <a href="/infoPlace/">
+                            <button class="view-btn">View</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col result-card">
+                <div class="card">
+                    <img src="{% static 'frontend/Images/HeroImage.jpg' %}" alt="result place" width="100px"
+                        height="100px">
+                    <div class="card-body">
+                        <h5 class="card-title">place name</h5>
+                        <a href="/infoPlace/">
+                            <button class="view-btn">View</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- not found result -->
+<section class="explore-results fade-in">
+    <p>Sorry, there is no result for your search.</p>
+    <hr> <!-- line -->
+    <h4>Other Places</h4>
+    <div class="results-list">
+        <div class="row row-cols-auto results-row d-flex flex-wrap">
+            <!-- loop for one col -->
+            <div class="col result-card">
+                <div class="card">
+                    <img src="{% static 'frontend/Images/HeroImage.jpg' %}" alt="result place" width="100px"
+                        height="100px">
+                    <div class="card-body">
+                        <h5 class="card-title">place name</h5>
+                        <a href="/infoPlace/">
+                            <button class="view-btn">View</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col result-card">
+                <div class="card">
+                    <img src="{% static 'frontend/Images/HeroImage.jpg' %}" alt="result place" width="100px"
+                        height="100px">
+                    <div class="card-body">
+                        <h5 class="card-title">place name</h5>
+                        <a href="/infoPlace/">
+                            <button class="view-btn">View</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col result-card">
+                <div class="card">
+                    <img src="{% static 'frontend/Images/HeroImage.jpg' %}" alt="result place" width="100px"
+                        height="100px">
+                    <div class="card-body">
+                        <h5 class="card-title">place name</h5>
+                        <a href="/infoPlace/">
+                            <button class="view-btn">View</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- filter results -->
+ <section class="explore-results fade-in">
+    <h4>Searching for region {{ search_query }}</h4> <!-- selected from filter -->
+    <hr> <!-- line -->
+    <div class="results-list">
+        <div class="row row-cols-auto results-row d-flex flex-wrap">
+            <!-- loop for one col -->
+            <div class="col result-card">
+                <div class="card">
+                    <img src="{% static 'frontend/Images/HeroImage.jpg' %}" alt="result place" width="100px" height="100px">
+                    <div class="card-body">
+                        <h5 class="card-title">place name</h5>
+                        <a href="/infoPlace/">
+                            <button class="view-btn">View</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col result-card">
+                <div class="card">
+                    <img src="{% static 'frontend/Images/HeroImage.jpg' %}" alt="result place" width="100px" height="100px">
+                    <div class="card-body">
+                        <h5 class="card-title">place name</h5>
+                        <a href="/infoPlace/">
+                            <button class="view-btn">View</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col result-card">
+                <div class="card">
+                    <img src="{% static 'frontend/Images/HeroImage.jpg' %}" alt="result place" width="100px" height="100px">
+                    <div class="card-body">
+                        <h5 class="card-title">place name</h5>
+                        <a href="/infoPlace/">
                             <button class="view-btn">View</button>
                         </a>
                     </div>

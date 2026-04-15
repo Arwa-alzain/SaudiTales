@@ -3,7 +3,7 @@
 {% block title %} Admin Dashboard {% endblock title %}
 {% block content %}
 
-<h2 class="page-title">Daily Analysis</h2>
+<h2 class="page-title">Daily analysis</h2>
 
 <!-- Stats cards -->
 <div class="daily-card">
@@ -70,6 +70,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+document.addEventListener("DOMContentLoaded", function() {
     const ctx = document.getElementById('featuredChart').getContext('2d');
 
     // Data from Django context
@@ -104,7 +105,6 @@
             }
         }
     });
-
 });
 
 const imgCtx = document.getElementById('visitsChart').getContext('2d');
