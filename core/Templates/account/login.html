@@ -41,7 +41,7 @@
                         {% csrf_token %}
                         <input type="text" name="username" placeholder="Enter username" required>
                         <input type="password" name="password" placeholder="Enter password" required>
-                        <a href="#" class="forget-link">Forget your password?</a>
+                        <a href="/accounts/password_reset/" class="forget-link">Forget your password?</a>
                         <button class="register-btn" type="submit">Sign Up</button>
                         <a href="/register/">Don't have an account? register now</a>
                     </form>

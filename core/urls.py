@@ -1,5 +1,8 @@
 from django.urls import path, include
 from . import views
+from django.conf import settings
+from django.http import HttpResponseForbidden
+
 urlpatterns = [
     path('', views.home, name='home'),
     path('explore/', views.explore, name='explore'),

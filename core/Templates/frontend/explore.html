@@ -11,7 +11,7 @@
                 <div class="col-auto manual-search align-items-center gap-3 d-flex flex-warp">
                     <!-- search text -->
                     <input type="search" name="q" class="form-control" placeholder="Search for landmarks..." required>
-                    <!-- custom dropdown -->
+                    {% comment %} <!-- custom dropdown -->
                     <div class="custom-select">
                         <button class="filter-btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
                             <i class="bi bi-funnel"></i>filter</button>
@@ -33,7 +33,7 @@
                             <div class="option" data-value="Tabuk">Tabuk</div>
                             <div class="option" data-value="Al-Ula">AlUla</div>
                         </div>
-                    </div>
+                    </div> {% endcomment %}
                     <!-- submit btn -->
                     <button class="search-btn" type="submit">Search</button>
             </form>

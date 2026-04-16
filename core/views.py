@@ -3,8 +3,8 @@ from django.http import HttpResponse
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login as auth_login, logout
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib import messages
 from .models import Landmark, Favorite, Story, ImageRecognitionLog, ActivityLog 
 from django.db.models import Q, Count, F
@@ -13,7 +13,7 @@ from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 from datetime import timedelta
 import os
-import joblib
+import joblib, random
 import numpy as np
 from PIL import Image
 from sklearn.preprocessing import normalize
@@ -41,11 +41,22 @@ def explore(request):
     })
 def exploreResult(request):
     query = request.GET.get('q', '') #the one we used as name
-    
+    region = request.GET.get('region', '')
+
     landmark = None
     top_landmarks = []
     related_landmarks = [] # it will be by reigon since we have reigon filter
+    
+    #this is for when no result appear (suggestions)
+    random_landmarks = list(Landmark.objects.all())
+    random.shuffle(random_landmarks)
+    random_landmarks = random_landmarks[:3]
+
+    #this is for filter by region
+    explore_landmarks = []
+
     results = []
+
     #to get information from db
     if query and len(query) >= 3: # limit length to avoide large scale saerching
         ActivityLog.objects.create(
@@ -56,7 +67,22 @@ def exploreResult(request):
             #we used icontains to "NOT" make the search case sensitive
             Q(Landmark_Name__icontains=query) | Q(Description__icontains=query)
         )
-#
+
+        #for filter
+        if region:
+            filtered = Landmark.objects.filter(Destination__iexact=region)
+            explore_landmarks = list(filtered)
+            random.shuffle(explore_landmarks)
+            explore_landmarks = explore_landmarks[:3]
+
+        else:
+            explore_landmarks = Landmark.objects.annotate(
+                likes_count=Count('favorite_set', distinct=True),
+                comments_count=Count('story_set', distinct=True),
+                popularity_score=F('likes_count') + 0.5 * F('comments_count')
+            ).order_by('-popularity_score')[:3]
+
+        #results
         if results.count() == 1:
             landmark = results.first() # if there is one result
         elif results.exists():
@@ -69,7 +95,10 @@ def exploreResult(request):
         'landmark': landmark,
         'top_landmarks': top_landmarks,
         'related_landmarks': related_landmarks,
+        'random_landmarks': random_landmarks,
+        'explore_landmarks': explore_landmarks,
         'query': query,
+        'region': region,
         'is_login': request.user.is_authenticated
     })
 def infoPlace(request, landmark_id):
@@ -212,7 +241,11 @@ def login(request):
 
         if user is not None:
             auth_login(request, user)
-            return redirect("/")
+
+            if user.is_staff or user.is_superuser:
+                return redirect("dashboard")
+            else:
+                return redirect("home")
 
         else:
             messages.error(request, "Invalid username or password.")
@@ -220,8 +253,8 @@ def login(request):
     return render(request, "account/login.html")
 
 def logout_view(request):
-    logout(request)
-    return redirect("/")
+    auth_logout(request)
+    return redirect("home")
 
 @login_required
 def toggle_favorite(request, landmark_id):
@@ -242,8 +275,14 @@ def toggle_favorite(request, landmark_id):
     
     return redirect('infoPlace', landmark_id=landmark.id)
 
+def admin_required(user):
+    return user.is_authenticated and (user.is_staff or user.is_superuser)
+def user_only(user):
+    return user.is_authenticated and not (user.is_staff or user.is_superuser)
+
 #admin dashboard:
 @login_required
+@user_passes_test(admin_required, login_url='/')
 def dashboard(request):
     users_count = User.objects.count()
     landmarks_count = Landmark.objects.count()
@@ -354,16 +393,19 @@ def dashboard(request):
     return render(request, 'adminDashboard/dashboard.html', context)
 
 @login_required
+@user_passes_test(admin_required, login_url='/')
 def landmarks(request):
     landmarks = Landmark.objects.all()
     return render(request, 'adminDashboard/landmarks.html', {'landmarks': landmarks})
 @login_required
+@user_passes_test(admin_required, login_url='/')
 def delete_landmark(request, landmark_id):
     if request.method == "POST":
         landmark = get_object_or_404(Landmark, id=landmark_id)
         landmark.delete()
     return redirect('landmarks')
 @login_required
+@user_passes_test(admin_required, login_url='/')
 def add_landmark(request):
     if request.method == "POST":
         destination = request.POST.get("Destination")
@@ -380,6 +422,7 @@ def add_landmark(request):
         return redirect('landmarks')
     return redirect('landmarks')
 @login_required
+@user_passes_test(admin_required, login_url='/')
 def update_landmark(request, landmark_id):
     landmark = get_object_or_404(Landmark, id=landmark_id)
 
@@ -396,10 +439,12 @@ def update_landmark(request, landmark_id):
         return redirect("landmarks")
     return render(request, 'update_landmark.html', {'landmark': landmark})
 @login_required
+@user_passes_test(admin_required, login_url='/')
 def accountMange(request):
     users = User.objects.all()
     return render(request, 'adminDashboard/AccountMang.html', {'users': users})
 @login_required
+@user_passes_test(admin_required, login_url='/')
 def delete_user(request, id):
     if request.method == "POST":
         user = get_object_or_404(User, id=id)
@@ -411,6 +456,7 @@ def delete_user(request, id):
         user.delete()
     return redirect('AccountManagement')
 @login_required
+@user_passes_test(admin_required, login_url='/')
 def disable_user(request, id):
     if request.method == "POST":
         user = get_object_or_404(User, id=id)
@@ -423,6 +469,7 @@ def disable_user(request, id):
         user.save()
     return redirect('AccountManagement')
 @login_required
+@user_passes_test(admin_required, login_url='/')
 def enable_user(request, id):
     if request.method == "POST":
         user = get_object_or_404(User, id=id)
@@ -430,6 +477,7 @@ def enable_user(request, id):
         user.save()
     return redirect('AccountManagement')
 @login_required
+@user_passes_test(admin_required, login_url='/')
 def add_user(request):
     if request.method == "POST":
         username = request.POST.get("username")
