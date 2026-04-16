@@ -34,16 +34,19 @@
       <div class="modal-logout-cotent">
         <h4>Are you sure you want to log out?</h4>
         <div class="logout-actions">
-          <button class="yes-btn" style="color: var(--white)">
-            <a href="/" style="color: inherit">Yes</a>
-          </button>
-          <button class="no-btn" id="close-log-modal">No</button>
+          <form action="{% url 'logout' %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="yes-btn">Yes</button>
+              <button type="button" class="no-btn" id="close-log-modal">No</button>
+          </form>
         </div>
       </div>
     </div>
 
     <div class="dashboard-layout">
-      {% include "includes/admin_sidebar.html" %}
+      {% if user.is_authenticated and user.is_staff %}
+          {% include "includes/admin_sidebar.html" %}
+      {% endif %}
 
       <main class="dashboard-content">{% block content %}{% endblock %}</main>
     </div>

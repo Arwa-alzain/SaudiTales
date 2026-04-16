@@ -2,6 +2,13 @@
 {% load static %}
 {% block title %} Explore Landmarks {% endblock title %}
 {% block content %}
+
+{% if error_message %}
+    <div class="alert alert-warning text-center mt-3">
+        {{ error_message }}
+    </div>
+{% endif %}
+
 <section class="search-section fade-in" style="margin-top: 112px;">
     <div class="container text-center d-flex flex-column align-items-center justify-content-center">
         <h5 class="explore-title">Explore Landmarks easily using text search or by uploading an image of a landmark</h5>
@@ -10,8 +17,9 @@
             <form action="{% url 'exploreResult' %}" method="get" class="search-form">
                 <div class="col-auto manual-search align-items-center gap-3 d-flex flex-warp">
                     <!-- search text -->
-                    <input type="search" name="q" class="form-control" placeholder="Search for landmarks..." required>
-                    {% comment %} <!-- custom dropdown -->
+                    <input type="search" id="searchInput" name="q" class="form-control" placeholder="Search for landmarks..." minlength="3">
+                    <input type="hidden" name="region" id="regionInput">
+                    <!-- custom dropdown -->
                     <div class="custom-select">
                         <button class="filter-btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
                             <i class="bi bi-funnel"></i>filter</button>
@@ -33,14 +41,12 @@
                             <div class="option" data-value="Tabuk">Tabuk</div>
                             <div class="option" data-value="Al-Ula">AlUla</div>
                         </div>
-                    </div> {% endcomment %}
+                    </div>
                     <!-- submit btn -->
                     <button class="search-btn" type="submit">Search</button>
             </form>
         </div>
     </div>
-    <!-- selected filter tags -->
-    <div class="selected-tags"></div>
 
     <!-- AI image recognition search -->
     <form method="POST" action="{% url 'predict_landmark' %}" enctype="multipart/form-data" id='imageSearchForm'>
@@ -65,4 +71,57 @@
         </div>
     </div>
 </section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const dropdown = document.querySelector(".options-list");
+    document.querySelectorAll('.option').forEach(opt => {
+        opt.addEventListener('click', function () {
+
+            let selectedRegion = this.dataset.value;
+
+            // to put region inside search bar
+            document.getElementById('searchInput').value = selectedRegion;
+
+            // to send region to backend
+            document.getElementById('regionInput').value = selectedRegion;
+
+            // to close the dropdown
+            dropdown.style.display = "none";
+
+        });
+    });
+    
+    const searchForm = document.querySelector(".search-form");
+
+    searchForm.addEventListener("submit", function (e) {
+        const query = document.getElementById("searchInput").value.trim();
+
+        if (!query) {
+            e.preventDefault();
+            alert("Please enter a search term.");
+            return;
+        }
+
+        if (query.length < 3) {
+            e.preventDefault();
+            alert("Please enter at least 3 characters.");
+            return;
+        }
+    });
+    
+    const imageForm = document.getElementById("imageSearchForm");
+
+    imageForm.addEventListener("submit", function (e) {
+        const fileInput = document.getElementById("ImageInput");
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+            e.preventDefault();
+            alert("Please upload an image before searching.");
+        }
+    });
+
+});
+</script>
 {% endblock content %}

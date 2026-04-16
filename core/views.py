@@ -32,64 +32,110 @@ def home(request):
     ).order_by('-popularity_score')[:3]
 
     return render(request, 'frontend/home.html', {
-        'is_login': request.user.is_authenticated,
         'popular_landmarks': popular_landmarks,
     })
 def explore(request):
     return render(request, 'frontend/explore.html',{
-        'is_login': request.user.is_authenticated
     })
 def exploreResult(request):
     query = request.GET.get('q', '') #the one we used as name
     region = request.GET.get('region', '')
+    search_type = 'text'
+
+    #to prevent empty search
+    if not query and not region:
+        return render(request, 'frontend/explore.html', {
+            'error_message': "Please enter a search term or select a region to continue."
+        })
+    
+    if query and len(query) < 3:
+        return render(request, 'frontend/exploreResult.html', {
+            'query': query,
+            'region': region,
+            'error_message': "Please enter at least 3 characters to search."
+        })
 
     landmark = None
     top_landmarks = []
     related_landmarks = [] # it will be by reigon since we have reigon filter
+    explore_landmarks = [] #this is for filter by region
+    random_landmarks = [] # for when no result 
     
-    #this is for when no result appear (suggestions)
-    random_landmarks = list(Landmark.objects.all())
-    random.shuffle(random_landmarks)
-    random_landmarks = random_landmarks[:3]
-
-    #this is for filter by region
-    explore_landmarks = []
-
-    results = []
-
-    #to get information from db
-    if query and len(query) >= 3: # limit length to avoide large scale saerching
-        ActivityLog.objects.create(
-            user=request.user if request.user.is_authenticated else None,
-            action_type='search'
+    #1- when using filter:
+    if region and not query:
+        explore_landmarks = list(
+            Landmark.objects.filter(Destination__iexact=region)
         )
+        random.shuffle(explore_landmarks)
+        return render(request, 'frontend/exploreResult.html', {
+            'explore_landmarks': explore_landmarks,
+            'query': '',
+            'region': region,
+            'landmark': None,
+            'top_landmarks': [],
+            'related_landmarks': [],
+            'random_landmarks': [],
+            'search_type': 'text',
+        })
+    
+    #2- when normail search:
+    if query:
         results = Landmark.objects.filter(
             #we used icontains to "NOT" make the search case sensitive
-            Q(Landmark_Name__icontains=query) | Q(Description__icontains=query)
+            Q(Landmark_Name__icontains=query) | Q(Destination__icontains=query)
         )
+        
+        #2.1 if result exist:
+        if results.exists():
 
-        #for filter
-        if region:
-            filtered = Landmark.objects.filter(Destination__iexact=region)
-            explore_landmarks = list(filtered)
-            random.shuffle(explore_landmarks)
-            explore_landmarks = explore_landmarks[:3]
+            # landmark = results.first() if results.count() == 1 else None
+            # top_landmarks = results if results.count() > 1 else []
+            
+            if results.count() == 1:
+                landmark = results.first()
 
+            else:
+                top_landmarks = results
+                
+            first_result = results.first()
+
+
+            related_landmarks = list(
+                Landmark.objects.filter(Destination=first_result.Destination)
+                .exclude(id__in=results.values_list('id', flat=True))
+            )
+
+            related_landmarks = random.sample(
+                related_landmarks,
+                min(3, len(related_landmarks))
+            )
+
+        #2.2 if no result:
         else:
-            explore_landmarks = Landmark.objects.annotate(
-                likes_count=Count('favorite_set', distinct=True),
-                comments_count=Count('story_set', distinct=True),
-                popularity_score=F('likes_count') + 0.5 * F('comments_count')
-            ).order_by('-popularity_score')[:3]
+            random_landmarks = list(Landmark.objects.all())
+            random_landmarks = random.sample(
+                random_landmarks,
+                min(3, len(random_landmarks))
+            )
 
-        #results
-        if results.count() == 1:
-            landmark = results.first() # if there is one result
-        elif results.exists():
-            top_landmarks = results # if there is more than one result
-        else:
-            # if there is no results, related landmarks will be displayed
-            related_landmarks = Landmark.objects.all()[:3]
+            return render(request, 'frontend/exploreResult.html', {
+                'random_landmarks': random_landmarks,
+                'query': query,
+                'region': region,
+                'search_type': 'text',
+            })
+
+    # #3- when no result appear (other places section)
+    # if not query and not region:
+    #     random_landmarks = list(Landmark.objects.all())
+    #     random.shuffle(random_landmarks)
+    #     random_landmarks = random_landmarks[:3]
+
+    #     return render(request, 'frontend/exploreResult.html', {
+    #         'random_landmarks': random_landmarks,
+    #         'query': query,
+    #         'region': region,
+    #     })
 
     return render(request, 'frontend/exploreResult.html', {
         'landmark': landmark,
@@ -99,7 +145,7 @@ def exploreResult(request):
         'explore_landmarks': explore_landmarks,
         'query': query,
         'region': region,
-        'is_login': request.user.is_authenticated
+        'search_type': 'text',
     })
 def infoPlace(request, landmark_id):
     # to fetch the landmark details using the provided landmark_id
@@ -138,7 +184,6 @@ def infoPlace(request, landmark_id):
 
     return render(request, 'frontend/InfoPlace.html', {
         'place': place,
-        'is_login': request.user.is_authenticated,
         'is_favorite': is_favorite,
         'stories': stories,        
     })
@@ -519,6 +564,15 @@ def predict_landmark(request):
     BASE_THRESHOLD = 0.60
     MARGIN_THRESHOLD = 0.02
 
+    search_type = 'image'
+
+    if request.method == 'POST':
+
+        if not request.FILES.get('image'):
+            return render(request, 'frontend/explore.html', {
+                'error_message': "Please upload an image before searching."
+            })
+
     if request.method == 'POST' and request.FILES.get('image'):
         try:
             # 1 prepare image
@@ -574,5 +628,5 @@ def predict_landmark(request):
         'landmark': landmark,
         'top_landmarks': top_landmarks,
         'error': error_msg,
-        'is_login': request.user.is_authenticated
+        'search_type': 'image',
     })

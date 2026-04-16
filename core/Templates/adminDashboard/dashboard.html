@@ -64,7 +64,7 @@
     <div class="chart-card"><canvas id="viewsChart"></canvas></div>
     <div class="chart-card"><canvas id="visitsChart"></canvas></div>
     <div class="chart-card"><canvas id="searchChart"></canvas></div>
-    <div class="chart-card"><canvas id="featuredChart"></canvas></div>
+    <div class="chart-card pie-wrapper"><canvas id="featuredChart"></canvas></div>
 </div>
 
 
@@ -94,9 +94,13 @@ document.addEventListener("DOMContentLoaded", function() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: 'bottom'
+                    display: false
+                },
+                tooltip: {
+                    enabled: true
                 },
                 title: {
                     display: true,
@@ -242,4 +246,10 @@ new Chart(topViewedCtx, {
 
 </script>
 
+<style>
+.pie-wrapper {
+    height: 280px;   /* adjust to match your original size */
+    max-height: 280px;
+}
+</style>
 {% endblock content %}
