@@ -18,6 +18,7 @@
                 <div class="col-auto manual-search align-items-center gap-3 d-flex flex-warp">
                     <!-- search text -->
                     <input type="search" id="searchInput" name="q" class="form-control" placeholder="Search for landmarks..." minlength="3">
+                   
                     <input type="hidden" name="region" id="regionInput">
                     <!-- custom dropdown -->
                     <div class="custom-select">
@@ -45,6 +46,7 @@
                     <!-- submit btn -->
                     <button class="search-btn" type="submit">Search</button>
             </form>
+            <small id="searchError" style="color:red; display:none; margin-top:5px; font-weight:500;"></small>
         </div>
     </div>
 
@@ -57,71 +59,19 @@
                     <div class="dashed-line">
                         <label class="upload-img">
                             <input type="file" id="ImageInput" name="image" accept="image/*" hidden>
-                            <img id="previewImage" src="{% static 'frontend/Images/Uploadimg-search.png' %}" alt="upload image" width="100px" height="100px"><br>
+                            <img id="previewImage" src="{% static 'frontend/Images/Uploadimg-search.png' %}" alt="upload image" width="100px" height="100px">
+                            <br>
                             <span class="text" id="uploadText">Click to upload or capture an image</span>
                             <small id="errorText" style="color:red; display:none;"></small>
-                    </label>
+                        </label>
+                    </div>
+                </div>
+                <br>
+                <!--- Search button -->
+                <div class="search-btn-wrapper">
+                    <button type="submit" class="search-btn">Search</button>
                 </div>
             </div>
-            <br>
-            <!--- Search button -->
-            <div class="search-btn-wrapper">
-                <button type="submit" class="search-btn">Search</button>
-            </div>
         </div>
-    </div>
-</section>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    const dropdown = document.querySelector(".options-list");
-    document.querySelectorAll('.option').forEach(opt => {
-        opt.addEventListener('click', function () {
-
-            let selectedRegion = this.dataset.value;
-
-            // to put region inside search bar
-            document.getElementById('searchInput').value = selectedRegion;
-
-            // to send region to backend
-            document.getElementById('regionInput').value = selectedRegion;
-
-            // to close the dropdown
-            dropdown.style.display = "none";
-
-        });
-    });
-    
-    const searchForm = document.querySelector(".search-form");
-
-    searchForm.addEventListener("submit", function (e) {
-        const query = document.getElementById("searchInput").value.trim();
-
-        if (!query) {
-            e.preventDefault();
-            alert("Please enter a search term.");
-            return;
-        }
-
-        if (query.length < 3) {
-            e.preventDefault();
-            alert("Please enter at least 3 characters.");
-            return;
-        }
-    });
-    
-    const imageForm = document.getElementById("imageSearchForm");
-
-    imageForm.addEventListener("submit", function (e) {
-        const fileInput = document.getElementById("ImageInput");
-
-        if (!fileInput.files || fileInput.files.length === 0) {
-            e.preventDefault();
-            alert("Please upload an image before searching.");
-        }
-    });
-
-});
-</script>
+    </section>
 {% endblock content %}
