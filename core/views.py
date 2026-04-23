@@ -4,14 +4,17 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib import messages
 from .models import Landmark, Favorite, Story, ImageRecognitionLog, ActivityLog 
 from django.db.models import Q, Count, F
+from django.http import JsonResponse
 from django.db.models.functions import TruncDate, TruncMonth
 from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 from datetime import timedelta
+from rapidfuzz import fuzz
 import os
 import joblib, random
 import numpy as np
@@ -110,20 +113,53 @@ def exploreResult(request):
                 min(3, len(related_landmarks))
             )
 
-        #2.2 if no result:
+        #2.2 if no exact result:
         else:
-            random_landmarks = list(Landmark.objects.all())
-            random_landmarks = random.sample(
-                random_landmarks,
-                min(3, len(random_landmarks))
-            )
+            #improved search using fuzzy library, it handle seach with typos 
+            all_landmarks = Landmark.objects.all()
+            fuzzy_matches = []
 
-            return render(request, 'frontend/exploreResult.html', {
-                'random_landmarks': random_landmarks,
-                'query': query,
-                'region': region,
-                'search_type': 'text',
-            })
+            for lm in all_landmarks:
+                name_score = fuzz.partial_ratio(query.lower(), lm.Landmark_Name.lower())
+                region_score = fuzz.partial_ratio(query.lower(), lm.Destination.lower())
+
+                score = max(name_score, region_score)
+
+                if score > 70: # the threshold
+                    fuzzy_matches.append((score, lm))
+
+            #sort best matches first
+            fuzzy_matches.sort(reverse=True, key=lambda x: x[0])
+
+            if fuzzy_matches:
+                best_match = fuzzy_matches[0][1]  #get the best match only
+                landmark = best_match
+                top_landmarks = []
+
+                related_landmarks = list(
+                    Landmark.objects.filter(Destination=best_match.Destination)
+                    .exclude(id=best_match.id)
+                )
+
+                related_landmarks = random.sample(
+                    related_landmarks,
+                    min(3, len(related_landmarks))
+                )
+
+            else:
+                #if still there is no result:
+                random_landmarks = list(Landmark.objects.all())
+                random_landmarks = random.sample(
+                    random_landmarks,
+                    min(3, len(random_landmarks))
+                )
+
+                return render(request, 'frontend/exploreResult.html', {
+                    'random_landmarks': random_landmarks,
+                    'query': query,
+                    'region': region,
+                    'search_type': 'text',
+                })
 
     # #3- when no result appear (other places section)
     # if not query and not region:
@@ -174,6 +210,7 @@ def infoPlace(request, landmark_id):
             Story.objects.create(user=request.user, landmark=place, content=comment_content)
             ActivityLog.objects.create(
                 user=request.user,
+                landmark=place,
                 action_type='comment'
             )
         return redirect('infoPlace', landmark_id=landmark_id)  # refresh page to show new comment
@@ -307,10 +344,10 @@ def toggle_favorite(request, landmark_id):
     favorite_obj = Favorite.objects.filter(user=request.user, landmark=landmark).first()
 
     if favorite_obj:
-        # Already favorited -> remove it
+        # Already favorited? remove it
         favorite_obj.delete()
     else:
-        # Not favorited -> add it
+        # Not favorited? add it
         Favorite.objects.create(user=request.user, landmark=landmark)
 
     ActivityLog.objects.create(
@@ -319,6 +356,19 @@ def toggle_favorite(request, landmark_id):
     )
     
     return redirect('infoPlace', landmark_id=landmark.id)
+
+@require_POST
+def share_landmark(request, landmark_id):
+    landmark = get_object_or_404(Landmark, id=landmark_id)
+
+    #if share button clicked, add it to log activity table
+    ActivityLog.objects.create(
+        user=request.user if request.user.is_authenticated else None,
+        landmark=landmark,
+        action_type='share'
+    )
+
+    return JsonResponse({'status': 'ok'})
 
 def admin_required(user):
     return user.is_authenticated and (user.is_staff or user.is_superuser)

@@ -2,6 +2,7 @@ from django.urls import path, include
 from . import views
 from django.conf import settings
 from django.http import HttpResponseForbidden
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -25,6 +26,7 @@ urlpatterns = [
 
     path('infoPlace/<int:landmark_id>/', views.infoPlace, name='infoPlace'),
     path('toggle_favorite/<int:landmark_id>/', views.toggle_favorite, name='toggle_favorite'),
+    path('share/<int:landmark_id>/', views.share_landmark, name='share_landmark'),
     path('delete_landmark/<int:landmark_id>/', views.delete_landmark, name='delete_landmark'),
     path('add_landmark/', views.add_landmark, name='add_landmark'),
     path('update_landmark/<int:landmark_id>/', views.update_landmark, name='update_landmark'),
@@ -32,5 +34,9 @@ urlpatterns = [
     path('delete_user/<int:id>/', views.delete_user, name='delete_user'),
     path('disable_user/<int:id>/', views.disable_user, name='disable_user'),
     path('enable_user/<int:id>/', views.enable_user, name='enable_user'),
-    path('accounts/', include('django.contrib.auth.urls')),
+    # path('accounts/', include('django.contrib.auth.urls')),
+    path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset_done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 ]

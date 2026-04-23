@@ -42,9 +42,10 @@ class ActivityLog(models.Model):
         ('image_recognition', 'Image Recognition'),
         ('like', 'Like'),
         ('comment', 'Comment'),
+        ('share', 'Share'),
     ]
 
-    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     action_type = models.CharField(max_length=30, choices=ACTION_TYPES)
     created_at = models.DateTimeField(auto_now_add=True)
     landmark = models.ForeignKey(Landmark, null=True, blank=True, on_delete=models.SET_NULL)

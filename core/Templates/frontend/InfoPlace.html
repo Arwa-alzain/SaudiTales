@@ -111,6 +111,18 @@
 <!--activating share button-->
 <script>
 document.getElementById("shareBtn").addEventListener("click", async () => {
+    
+    const url = window.location.href;
+
+    //Log share in backend
+    fetch("{% url 'share_landmark' place.id %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}"
+        }
+    });
+    
+    //share button activities
     const shareData = {
         title: document.title,
         text: "Check out {{place.Landmark_Name}} on SaudiTales! Discover its history and details below:!",
