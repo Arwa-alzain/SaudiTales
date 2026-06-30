@@ -45,7 +45,7 @@ This project was developed as a graduation project (B.Sc. in Computer Science) a
 
 ### Prerequisites
 
-- Python 3.x
+- Python 3
 - MySQL Server
 - Git
 
@@ -53,7 +53,7 @@ This project was developed as a graduation project (B.Sc. in Computer Science) a
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Arwa-alzain/SaudiTales/tree/main
    cd saudi-tales
    ```
 
