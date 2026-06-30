@@ -8,8 +8,6 @@ Cultural heritage plays a vital role in preserving the identity and history of s
 
 Saudi Tales is an interactive web platform that uses artificial intelligence to identify landmarks from user-uploaded images and instantly provide accurate historical details and photos. The platform also allows users to share their own stories and experiences and offers intelligent recommendations for related sites.
 
-This project was developed as a graduation project (B.Sc. in Computer Science) at the College of Computer, Qassim University, by Arwa Alzain, Rawan Almutairi, and Fatimah Alkhuraiji, supervised by Dr. Tahani Alwaneen.
-
 ## Key Features
 
 - **Image-Based Recognition** – Upload a photo of any historical or heritage landmark, and the AI model identifies it.
@@ -17,6 +15,8 @@ This project was developed as a graduation project (B.Sc. in Computer Science) a
 - **Dynamic Information Display** – View detailed historical information, descriptions, significant events, and archival photos for each landmark.
 - **User Contributions** – Share personal stories and experiences about landmarks.
 - **Favorites** – Save landmarks to a personal favorites list.
+- **Sharing** – Copy a landmark's page link or share it directly to social media.
+- **Comments** – Leave comments on landmark pages.
 - **Smart Recommendations** – Get suggestions for related or nearby landmarks.
 - **Admin Dashboard** – Manage landmarks and user accounts.
 
@@ -70,7 +70,7 @@ This project was developed as a graduation project (B.Sc. in Computer Science) a
    ```bash
    pip install -r requirements.txt
    ```
-   
+
 4. **Create a superuser (for the admin dashboard)**
    ```bash
    python manage.py createsuperuser
@@ -83,13 +83,24 @@ This project was developed as a graduation project (B.Sc. in Computer Science) a
 
 6. Open your browser and go to `http://127.0.0.1:8000/`
 
-## Project Structure 
+## Project Structure
 
 - **Authentication** – Login, registration, logout (Django built-in authentication)
 - **Image Recognition** – Landmark prediction using MobileNetV2 (`predict_landmark()`)
 - **Landmark Management** – Add/edit/view landmark info (`exploreResult()`, `infoPlace()`)
 - **Favorites** – Add/remove favorites (`toggle_favorite()`)
+- **Sharing & Comments** – Share landmark pages and leave comments (`share_landmark()`, comments)
 - **Admin Dashboard** – Manage landmarks and accounts (`dashboard()`, `landmarks()`, `accountManage()`)
+
+## Testing
+
+The system was verified using three levels of testing:
+
+- **Unit Testing** – Each component/function (sidebar navigation, login/logout, `exploreResult()`, `predict_landmark()`, `infoPlace()`, `toggle_favorite()`, `share_landmark()`, comments) was tested individually against its expected outcome. All test cases passed.
+- **Integration Testing** – Verified that modules such as user authentication, landmark search, favorites, comments, and the admin dashboard work together correctly and pass data between each other without errors.
+- **Acceptance Testing** – Conducted to confirm the system meets user requirements and acceptance criteria; results confirmed Saudi Tales operates as intended in real-world use.
+
+The AI model itself was also evaluated separately, achieving strong Top-N accuracy in landmark classification on the test dataset.
 
 ## Future Work
 
@@ -97,6 +108,12 @@ This project was developed as a graduation project (B.Sc. in Computer Science) a
 - Improving the AI model's accuracy with more training data.
 - Adding multilingual support.
 
-## Team Member and Supervised
+## Team Members & Supervision
 
-Arwa Alzain, Rawan Almutairi, and Fatimah Alkhuraiji, supervised by Dr. Tahani Alwaneen.
+This project was developed as a graduation project (B.Sc. in Computer Science) at the College of Computer, Qassim University.
+
+- Arwa Alzain
+- Rawan Almutairi
+- Fatimah Alkhuraiji
+
+**Supervised by:** Dr. Tahani Alwaneen
