@@ -117,3 +117,10 @@ This project was developed as a graduation project (B.Sc. in Computer Science) a
 - Fatimah Alkhuraiji
 
 **Supervised by:** Dr. Tahani Alwaneen
+
+---
+
+## License
+
+Copyright © 2026 Saudi Tales
+Licensed under the MIT License.
