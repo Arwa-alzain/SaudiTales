@@ -70,30 +70,20 @@ This project was developed as a graduation project (B.Sc. in Computer Science) a
    ```bash
    pip install -r requirements.txt
    ```
-
-4. **Configure the database**
-   - Create a MySQL database (e.g. `saudi_tales_db`).
-   - Update the `DATABASES` settings in `settings.py` with your MySQL credentials.
-
-5. **Apply migrations**
-   ```bash
-   python manage.py makemigrations
-   python manage.py migrate
-   ```
-
-6. **Create a superuser (for the admin dashboard)**
+   
+4. **Create a superuser (for the admin dashboard)**
    ```bash
    python manage.py createsuperuser
    ```
 
-7. **Run the development server**
+5. **Run the development server**
    ```bash
    python manage.py runserver
    ```
 
-8. Open your browser and go to `http://127.0.0.1:8000/`
+6. Open your browser and go to `http://127.0.0.1:8000/`
 
-## Project Structure (High-Level)
+## Project Structure 
 
 - **Authentication** – Login, registration, logout (Django built-in authentication)
 - **Image Recognition** – Landmark prediction using MobileNetV2 (`predict_landmark()`)
@@ -107,6 +97,6 @@ This project was developed as a graduation project (B.Sc. in Computer Science) a
 - Improving the AI model's accuracy with more training data.
 - Adding multilingual support.
 
-## Acknowledgements
+## Team Member and Supervised
 
-Supervised by Dr. Tahani Alwaneen, College of Computer, Qassim University.
+Arwa Alzain, Rawan Almutairi, and Fatimah Alkhuraiji, supervised by Dr. Tahani Alwaneen.
