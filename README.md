@@ -112,7 +112,7 @@ The AI model itself was also evaluated separately, achieving strong Top-N accura
 
 This project was developed as a graduation project (B.Sc. in Computer Science) at the College of Computer, Qassim University.
 
-- Arwa Alzain
+- Arwa Alzain -  [arwaahalzain@gmail.com](mailto:arwaahalzain@gmail.com)
 - Rawan Almutairi
 - Fatimah Alkhuraiji
 
