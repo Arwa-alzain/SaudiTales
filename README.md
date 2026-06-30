@@ -119,8 +119,4 @@ This project was developed as a graduation project (B.Sc. in Computer Science) a
 **Supervised by:** Dr. Tahani Alwaneen
 
 ---
-
-## License
-
-Copyright © 2026 Saudi Tales
-Licensed under the MIT License.
+© 2026 Saudi Tales
